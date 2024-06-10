@@ -2,41 +2,41 @@ pipeline {
     agent {
         label 'AGENT-1'
     }
-     options{
+    options {
         timeout(time: 30, unit: 'MINUTES')
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
-     parameters {
+    parameters {
         choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
     }
     stages {
         stage('Init') { // init should happen whether apply or destroy
             steps {
-                sh """
-                    cd 01-vpc
-                    terraform init -reconfigure
-                """
+               sh """
+                cd 01-vpc
+                terraform init -reconfigure
+               """
             }
         }
-        stage('Plan') { // No plan for destory
-        when{
-            expression{
-                params.action == 'Apply'
+        stage('Plan') {
+            when {
+                expression{
+                    params.action == 'Apply'
+                }
             }
-        }
             steps {
                 sh """
-                    cd 01-vpc
-                    terraform plan
+                cd 01-vpc
+                terraform plan
                 """
             }
         }
         stage('Deploy') {
-            when{
-            expression{
-                params.action == 'Apply'
-            }
+            when {
+                expression{
+                    params.action == 'Apply'
+                }
             }
             input {
                 message "Should we continue?"
@@ -44,34 +44,36 @@ pipeline {
             }
             steps {
                 sh """
-                    cd 01-vpc
-                    terraform apply -auto-approve
+                cd 01-vpc
+                terraform apply -auto-approve
                 """
             }
         }
-           stage('Destroy') {
-           when{
-            expression{
-                params.action == 'Destory'
+
+        stage('Destroy') {
+            when {
+                expression{
+                    params.action == 'Destroy'
+                }
             }
             steps {
                 sh """
-                    cd 01-vpc
-                    terraform destory -auto-approve
+                cd 01-vpc
+                terraform destroy -auto-approve
                 """
             }
         }
-     }
-    post{ //This will catch the event and send Alerts to Mail/Slack
-        always{
-            echo 'Always say hello Again'
+    }
+    post {  //This will catch the event and send Alerts to Mail/Slack
+        always { 
+            echo 'I will always say Hello again!'
             deleteDir()
         }
-        success{
-            echo 'I will run when pipelin is SUCCESS'
+        success { 
+            echo 'I will run when pipeline is success'
         }
-        failure{
-            echo 'I will run when pipeline is Failure'
+        failure { 
+            echo 'I will run when pipeline is failure'
         }
     }
 }
