@@ -31,6 +31,7 @@ pipeline {
     post{ //This will catch the event and send Alerts to Mail/Slack
         always{
             echo 'Always say hello Again'
+            deleteDir()
         }
         success{
             echo 'I will run when pipelin is SUCCESS'
