@@ -10,8 +10,8 @@ pipeline {
         stage('Init') {
             steps {
                 sh """
-                    cd -1-vpc
-                    terraofmr init -reconfigure
+                    cd 01-vpc
+                    terraform init -reconfigure
                 """
             }
         }
