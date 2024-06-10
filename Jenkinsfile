@@ -10,7 +10,8 @@ pipeline {
         stage('Init') {
             steps {
                 sh """
-                    ls -ltr
+                    cd -1-vpc
+                    terraofmr init -reconfigure
                 """
             }
         }
