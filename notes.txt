@@ -1,0 +1,42 @@
+# No need of Bastion while creating VPN
+To run all files with out Bastion------------
+
+Apply -------
+for i in 01-vpc/ 02-sg/ 04-db/ 05-vpn/ 06-app-alb/ 07-backend/ 07.1-acm/ 08-web-alb/ 09-frontend/; do cd $i; terraform init -reconfigure; terraform apply -auto-approve; cd ..; done
+
+Destroy ------
+for i in  09-frontend/ 08-web-alb/ 07.1-acm/ 07-backend/ 06-app-alb/ 05-vpn/ 04-db/ 02-sg/ 01-vpc/ ; do cd $i; terraform destroy -auto-approve; cd .. ; done
+
+
+# When every time we run server will create again , configure again, takes AMI, delete server... (This is deployment)
+
+
+# Provisioning means: Copy the file and run scripts in that
+
+# There is NO DOWN TIME HERE? --> New server is created -> After getting this into Running state, then  OLD Server Deleted
+# Here we are stoping the AMI not server
+
+# After creating the server and configuring it, it dosen't get the traffic (WE need to attach to Auto Scaling)
+
+
+--> Private Load Balancer (2nd) that will be open via VPN on port number 80
+--> In frontend contains only 1 servicev(web-dev.dawsmani.site)
+--> In backend contains multiple services () 
+
+*.app-dev.dawsmani.site (* can replace any service)
+backend.app-dev.dawsmani.site (This will redirec to backend service)
+user.app-dev.dawsmani.site (''   '    ' to user service)
+
+# To create backend Instances---------
+1) Instance creation
+2) Configure Using Ansible, terraform NUll RESOURCE
+3) Stop Instance
+4) Take AMI
+5) Delete the Instance
+
+6) Create target group
+7) Create Launch Template
+8) Create ASG (Auto Scaling Group)
+9) Create ASG Policy
+10) Add Rule to the Load Balancer Listner
+
