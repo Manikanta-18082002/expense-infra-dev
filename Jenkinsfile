@@ -11,7 +11,7 @@ pipeline {
         choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
     }
     stages {
-        stage('Init') {
+        stage('Init') { // init should happen whether apply or destroy
             steps {
                 sh """
                     cd 01-vpc
@@ -19,7 +19,12 @@ pipeline {
                 """
             }
         }
-        stage('Plan') {
+        stage('Plan') { // No plan for destory
+        when{
+            expression{
+                params.action == 'Apply'
+            }
+        }
             steps {
                 sh """
                     cd 01-vpc
@@ -28,6 +33,10 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when{
+            expression{
+                params.action == 'Apply'
+            }
             input {
                 message "Should we continue?"
                 ok "Yes, we should." // yes button will pop-up, user need to press
@@ -36,6 +45,18 @@ pipeline {
                 sh """
                     cd 01-vpc
                     terraform apply -auto-approve
+                """
+            }
+        }
+           stage('Deploy') {
+           when{
+            expression{
+                params.action == 'Destory'
+            }
+            steps {
+                sh """
+                    cd 01-vpc
+                    terraform destory -auto-approve
                 """
             }
         }
