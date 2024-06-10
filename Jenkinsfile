@@ -7,6 +7,9 @@ pipeline {
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
+     parameters {
+        choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
+    }
     stages {
         stage('Init') {
             steps {
@@ -27,7 +30,7 @@ pipeline {
         stage('Deploy') {
             input {
                 message "Should we continue?"
-                ok "Yes, we should."
+                ok "Yes, we should." // yes button will pop-up, user need to press
             }
             steps {
                 sh """
