@@ -37,6 +37,7 @@ pipeline {
             expression{
                 params.action == 'Apply'
             }
+            }
             input {
                 message "Should we continue?"
                 ok "Yes, we should." // yes button will pop-up, user need to press
@@ -48,7 +49,7 @@ pipeline {
                 """
             }
         }
-           stage('Deploy') {
+           stage('Destroy') {
            when{
             expression{
                 params.action == 'Destory'
@@ -60,7 +61,7 @@ pipeline {
                 """
             }
         }
-    }
+     }
     post{ //This will catch the event and send Alerts to Mail/Slack
         always{
             echo 'Always say hello Again'
