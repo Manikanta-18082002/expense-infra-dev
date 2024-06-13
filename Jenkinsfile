@@ -11,7 +11,7 @@ pipeline {
     //     choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
     // }
     stages {
-        stage('Init') { // init should happen whether apply or destroy
+        stage('Init') { // init should happen regardless of apply or destroy
             steps { // Below we are writing scripts
                sh """ 
                 cd 01-vpc
@@ -19,50 +19,36 @@ pipeline {
                """
             }
         }
-
-        stage('Plan'){
-            steps{
-                sh 'echo This is Test'
+        stage('Plan') {
+            // when {
+            //     expression{
+            //         params.action == 'Apply'
+            //     }
+            // }
+            steps {
+                sh """
+                cd 01-vpc
+                terraform plan
+                """
             }
         }
-        stage('Deploy'){
-            steps{
-                sh 'echo This is Deploy'
+        stage('Deploy') {
+            // when {
+            //     expression{
+            //         params.action == 'Apply'
+            //     }
+            // }
+            input {
+                message "Should we continue?"
+                ok "Yes, we should." // yes button will pop-up, user need to press
+            }
+            steps {
+                sh """
+                cd 01-vpc
+                terraform apply -auto-approve
+                """
             }
         }
-    }
-
-
-        // stage('Plan') {
-        //     when {
-        //         expression{
-        //             params.action == 'Apply'
-        //         }
-        //     }
-        //     steps {
-        //         sh """
-        //         cd 01-vpc
-        //         terraform plan
-        //         """
-        //     }
-        // }
-        // stage('Deploy') {
-        //     when {
-        //         expression{
-        //             params.action == 'Apply'
-        //         }
-        //     }
-        //     input {
-        //         message "Should we continue?"
-        //         ok "Yes, we should." // yes button will pop-up, user need to press
-        //     }
-        //     steps {
-        //         sh """
-        //         cd 01-vpc
-        //         terraform apply -auto-approve
-        //         """
-        //     }
-        // }
 
         // stage('Destroy') {
         //     when {
@@ -78,10 +64,13 @@ pipeline {
         //     }
         // }
 
+    }
+
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
             echo 'I will always say Hello again!'
-            deleteDir()
+            deleteDir() // After Building  Workspace need to delete else (Some problems changes will not reflect)
+            // Above (Check path in AGENT node) --> jenkins-agent/workspace/Expense (NO VPC Folder)
         }
         success { 
             echo 'I will run when pipeline is success'
