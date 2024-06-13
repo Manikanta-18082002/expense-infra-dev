@@ -6,7 +6,8 @@ for i in 01-vpc/ 02-sg/ 04-db/ 05-vpn/ 06-app-alb/ 07-backend/ 07.1-acm/ 08-web-
 
 Destroy ------
 for i in  09-frontend/ 08-web-alb/ 07.1-acm/ 07-backend/ 06-app-alb/ 05-vpn/ 04-db/ 02-sg/ 01-vpc/ ; do cd $i; terraform destroy -auto-approve; cd .. ; done
-
+or
+for i in $(ls -dr */) ; do cd ${i%/}; terraform destroy -auto-approve; cd ..; done
 
 # When every time we run server will create again , configure again, takes AMI, delete server... (This is deployment)
 
