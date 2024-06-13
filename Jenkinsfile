@@ -7,9 +7,9 @@ pipeline {
         disableConcurrentBuilds() // No Multiple  Builds
         ansiColor('xterm')
     }
-    // parameters {
-    //     choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
-    // }
+    parameters {
+        choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
+    }
     stages {
         stage('Init') { // init should happen regardless of apply or destroy
             steps { // Below we are writing scripts
