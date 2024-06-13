@@ -5,7 +5,7 @@ pipeline {
     options {
         timeout(time: 30, unit: 'MINUTES')
         disableConcurrentBuilds() // No Multiple  Builds
-        ansiColor('xterm')
+        // ansiColor('xterm')
     }
     // parameters {
     //     choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
