@@ -11,33 +11,28 @@ pipeline {
     //     choice(name: 'action', choices: ['Apply', 'Destroy'], description: 'Pick something')
     // }
     stages {
-        stage('Init'){
-            steps{
-                sh """
-                    cd 01-vpc
-                    terraform init -reconfigure
-                """
-            }
-            stage('Plan'){
-                steps{
-                    sh 'echo This is Test'
-                }
-            }
-            stage('Deploy'){
-                steps{
-                    sh 'echo This is Deploy'
-                }
+        stage('Init') { // init should happen whether apply or destroy
+            steps { // Below we are writing scripts
+               sh """ 
+                cd 01-vpc
+                terraform init -reconfigure
+               """
             }
         }
 
-        // stage('Init') { // init should happen whether apply or destroy
-        //     steps { // Below we are writing scripts
-        //        sh """ 
-        //         cd 01-vpc
-        //         terraform init -reconfigure
-        //        """
-        //     }
-        // }
+        stage('Plan'){
+            steps{
+                sh 'echo This is Test'
+            }
+        }
+        stage('Deploy'){
+            steps{
+                sh 'echo This is Deploy'
+            }
+        }
+    }
+
+
         // stage('Plan') {
         //     when {
         //         expression{
@@ -82,7 +77,7 @@ pipeline {
         //         """
         //     }
         // }
-    }
+
     post {  //This will catch the event and send Alerts to Mail/Slack
         always { 
             echo 'I will always say Hello again!'
